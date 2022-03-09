@@ -1,12 +1,8 @@
 import 'dart:typed_data';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/model/allscreens.dart';
 import 'package:final_project/resources/auth_methods.dart';
-import 'package:final_project/model/user_model.dart';
 import 'package:final_project/resources/utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -17,12 +13,12 @@ class RegistrationScreen extends StatefulWidget {
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
-class _RegistrationScreenState extends State<RegistrationScreen> {
+class _RegistrationScreenState extends State<RegistrationScreen>
+    with TickerProviderStateMixin {
   //form key
   final _formKey = GlobalKey<FormState>();
 
   //firebase authentication
-  final _auth = FirebaseAuth.instance;
 
   //controllers
   final nameEditingController = TextEditingController();
@@ -31,12 +27,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final passwordEditingController = TextEditingController();
   final confirmPasswordEditingController = TextEditingController();
   final userNameEditingController = TextEditingController();
+  late AnimationController animationController;
   Uint8List? _image;
   bool _isLoading = false;
 
   @override
+  void initState() {
+    animationController =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    animationController.repeat();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     super.dispose();
+    animationController.dispose();
     nameEditingController.dispose();
     bioEditingController.dispose();
     emailEditingController.dispose();
@@ -46,10 +52,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   Future<void> selectImage() async {
-    Uint8List im = await pickImage(ImageSource.gallery);
+    Uint8List? im = await pickImage(ImageSource.gallery);
     setState(() {
       _image = im;
     });
+    if (im == null) {
+      showSnackBar('No image selected', context);
+    }
   }
 
   @override
@@ -247,16 +256,26 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       onTap: signUpUser,
       child: Container(
         child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
+            ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: animationController.drive(
+                    ColorTween(begin: Colors.green, end: Colors.blue),
+                  ),
+                ),
               )
-            : const Text('Sign up', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 19),),
+            : const Text(
+                'Sign up',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+              ),
         width: double.infinity,
+        height: 50,
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: const ShapeDecoration(
-          gradient: LinearGradient(colors: [Colors.blue,Colors.green], begin: Alignment.bottomRight, end: Alignment.topLeft),
-
+          gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(20),
@@ -266,7 +285,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -382,8 +400,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     setState(() {
       _isLoading = false;
     });
-    if (res != 'success') {
+    if (res != 'Success') {
       showSnackBar(res, context);
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const MainHome(),
+        ),
+      );
     }
   }
 }

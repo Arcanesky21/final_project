@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/model/functions.dart';
+import 'package:final_project/model/user_model.dart';
+import 'package:final_project/widgets/follow_button.dart';
+import 'package:final_project/widgets/navigation_drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../model/user_model.dart';
-import '../widgets/follow_button.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -43,8 +44,8 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const NavigationDrawerWidget(),
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         flexibleSpace: Container(decoration: myDecorationColor),
         title: Text("${loggedInUser.firstName} ${loggedInUser.lastName}"),
       ),

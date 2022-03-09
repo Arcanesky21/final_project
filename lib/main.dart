@@ -1,7 +1,10 @@
-import 'package:final_project/screens/login_screen.dart';
+import 'package:final_project/model/allscreens.dart';
+import 'package:final_project/resources/user_providers.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,16 +21,42 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Login',
-      theme: ThemeData(
-        //main theme
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => UserProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Pollution Tracker',
+        theme: ThemeData(
+          //main theme
 
-        primarySwatch: Colors.green,
+          primarySwatch: Colors.green,
+        ),
+        //Homepage, Change later
+        home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.active) {
+              if (snapshot.hasData) {
+                return const MainHome();
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('$snapshot.error'),
+                );
+              }
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return const LoginScreen();
+          },
+        ),
       ),
-      //Homepage, Change later
-      home: const LoginScreen(),
     );
   }
 }

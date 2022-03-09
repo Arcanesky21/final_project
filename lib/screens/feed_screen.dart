@@ -1,4 +1,5 @@
 import 'package:final_project/model/functions.dart';
+import 'package:final_project/widgets/navigation_drawer.dart';
 import 'package:final_project/widgets/post_card.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +14,8 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const NavigationDrawerWidget(),
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         flexibleSpace: Container(decoration: myDecorationColor),
         title: const Text('Posts'),
       ),

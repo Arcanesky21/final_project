@@ -1,6 +1,6 @@
+import 'package:final_project/model/allscreens.dart';
 import 'package:final_project/model/functions.dart';
 import 'package:flutter/material.dart';
-import '../model/allscreens.dart';
 
 class MainHome extends StatefulWidget {
   const MainHome({Key? key}) : super(key: key);

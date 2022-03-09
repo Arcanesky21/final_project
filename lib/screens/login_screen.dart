@@ -1,10 +1,8 @@
-import '../model/allscreens.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:final_project/resources/auth_methods.dart';
+import 'package:final_project/resources/utils.dart';
+import 'package:final_project/model/allscreens.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'initial_home.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -13,16 +11,33 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with TickerProviderStateMixin {
   //Form key
   final _formKey = GlobalKey<FormState>();
 
   //Controllers
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool _isLoading = false;
+  late AnimationController animationController;
 
   //firebase code
-  final _auth = FirebaseAuth.instance;
+  @override
+  void initState() {
+    animationController =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    animationController.repeat();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return ("Password Required");
         }
         if (!regex.hasMatch(value)) {
-          return ("Enter Valid Passwod(Min. 6 Character)");
+          return ("Enter Valid Password(Min. 6 Character)");
         }
         return null;
       },
@@ -91,21 +106,35 @@ class _LoginScreenState extends State<LoginScreen> {
       obscureText: true,
     );
     //login button
-    final loginButton = Material(
-      elevation: 5,
-      borderRadius: BorderRadius.circular(30),
-      color: Colors.green,
-      child: MaterialButton(
-        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-        minWidth: MediaQuery.of(context).size.width,
-        onPressed: () {
-          signIn(emailController.text, passwordController.text);
-        },
-        child: const Text(
-          'Login',
-          style: TextStyle(
-              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
+    final loginButton = InkWell(
+      onTap: signIn,
+      child: Container(
+        child: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(
+                  valueColor: animationController.drive(
+                    ColorTween(begin: Colors.blue, end: Colors.blue),
+                  ),
+                ),
+              )
+            : const Text(
+                'Login',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+              ),
+        width: double.infinity,
+        height: 50,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: const ShapeDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.bottomRight,
+              end: Alignment.topLeft),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(20),
+            ),
+          ),
         ),
       ),
     );
@@ -126,14 +155,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
-                      height: 200,
+                      height: 120,
                       child: Image.asset(
                         'assets/icons/logo_size.jpg',
                         fit: BoxFit.contain,
                       ),
                     ),
                     const SizedBox(
-                      height: 45,
+                      height: 25,
                     ),
                     emailField,
                     const SizedBox(
@@ -154,10 +183,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const RegistrationScreen()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const RegistrationScreen(),
+                              ),
+                            );
                           },
                           child: const Text(
                             "SignUp",
@@ -180,17 +211,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   //login function
-  void signIn(String email, String password) async {
+  void signIn() async {
     if (_formKey.currentState!.validate()) {
-      await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((uid) => {
-                Fluttertoast.showToast(msg: "Login Successful"),
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => const MainHome()))
-              })
-          .catchError((e) {
-        Fluttertoast.showToast(msg: e!.message);
+      setState(() {
+        _isLoading = true;
+      });
+      String res = await AuthMethods().login(
+          email: emailController.text, password: passwordController.text);
+      if (res == "Success") {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MainHome(),
+          ),
+        );
+      } else {
+        showSnackBar(res, context);
+      }
+      setState(() {
+        _isLoading = false;
       });
     }
   }

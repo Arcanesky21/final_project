@@ -1,7 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/model/functions.dart';
-import 'package:final_project/model/user_model.dart';
-import 'package:final_project/screens/initial_home.dart';
 import 'package:final_project/model/allscreens.dart';
 import 'package:flutter/material.dart';
 
@@ -13,23 +10,10 @@ class NavigationDrawerWidget extends StatefulWidget {
 }
 
 class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
-  @override
   //creates an instance of the database
-  void initState() {
-    super.initState();
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      loggedInUser = UserModel.fromMap(value.data());
-      setState(() {});
-    });
-  }
 
   final padding = const EdgeInsets.symmetric(horizontal: 20);
-  late final name = "${loggedInUser.firstName}";
-  late final lname = " ${loggedInUser.lastName}";
+
   late final urlImage =
       "https://static.fandomspot.com/images/11/22153/00-featured-naruto-shippuden-itachi-covering-his-bleeding-eyes-screenshot-al.jpg";
 
@@ -43,8 +27,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
           child: ListView(children: <Widget>[
             buildHeader(
               urlImage: urlImage,
-              name: name,
-              lname: lname,
+              name: 'name',
+              lname: 'lname',
               onClicked: () {},
             ),
             Container(
@@ -69,8 +53,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                   ),
                   //user settings
                   buildMenuItem(
-                      text: 'Manage Account',
-                      icon: Icons.manage_accounts,
+                      text: 'Social Media',
+                      icon: Icons.question_answer,
                       onClicked: () => selectedItem(context, 1)),
                   const SizedBox(
                     height: 5,
@@ -157,7 +141,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         break;
       case 1:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const FeedScreen(),
+          builder: (context) => const SocialMediaSection(),
         ));
         break;
       case 2:

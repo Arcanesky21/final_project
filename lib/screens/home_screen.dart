@@ -1,15 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/model/air_quality.api.dart';
 import 'package:final_project/model/functions.dart';
 import 'package:final_project/model/pollution_model.dart';
-import 'package:final_project/model/user_model.dart';
+import 'package:final_project/model/users.dart';
+import 'package:final_project/resources/user_providers.dart';
 import 'package:final_project/widgets/navigation_drawer.dart';
 import 'package:final_project/widgets/pollution_info.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -19,8 +19,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  User? user = FirebaseAuth.instance.currentUser;
-  UserModel loggedInUser = UserModel();
+
   late List<PollutionModelCurrent> _pm;
   late Future singlePollution;
   double _latitude = 35.779;
@@ -71,15 +70,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     singlePollution = getPollutionCurrent();
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      loggedInUser = UserModel.fromMap(value.data());
-      setState(() {});
-    });
+    addData();
   }
+
+  addData() async {
+    UserProvider _userProvider = Provider.of(context, listen: false);
+    await _userProvider.refreshUser();
+  }
+
+
 
   Future<void> getPollutionCurrent() async {
     _pm = await AirPollutionApi.getPollutionCurrent(_longitude, _latitude);
@@ -90,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Users user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       drawer: const NavigationDrawerWidget(),
@@ -124,14 +124,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 10,
                     ),
                     Text(
-                      "${loggedInUser.firstName} ${loggedInUser.lastName}",
+                      user.username,
                       style: const TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
                     Text(
-                      "${loggedInUser.email}",
+                      user.email,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w400,

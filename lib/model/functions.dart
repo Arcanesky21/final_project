@@ -1,5 +1,4 @@
 import 'package:final_project/model/allscreens.dart';
-import 'package:final_project/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +9,6 @@ Future<void> logout(BuildContext context) async {
 }
 
 User? user = FirebaseAuth.instance.currentUser;
-UserModel loggedInUser = UserModel();
 
 Widget buildSearchField() {
   const color = Colors.white;

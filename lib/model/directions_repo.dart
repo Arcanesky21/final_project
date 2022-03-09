@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:final_project/model/.env.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:final_project/model/.env.dart';
 
 import 'directions_model.dart';
 
