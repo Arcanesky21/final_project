@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/model/posts.dart';
 import 'package:final_project/resources/storage_methods.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uuid/uuid.dart';
 
 class FirestoreMethods {
@@ -33,5 +34,21 @@ class FirestoreMethods {
     }
 
     return res;
+  }
+
+  Future<void> upVotePost(String postId, String uid, List likes) async {
+    try {
+      if (likes.contains(uid)) {
+        await _firestore.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayRemove([uid])
+        });
+      } else {
+        await _firestore.collection('posts').doc(postId).update({
+          'likes': FieldValue.arrayUnion([uid])
+        });
+      }
+    } catch (err) {
+      Fluttertoast.showToast(msg: err.toString());
+    }
   }
 }
