@@ -129,8 +129,7 @@ class _MapTabState extends State<MapTab> {
         _origin = Marker(
             markerId: const MarkerId('origin'),
             infoWindow: InfoWindow(
-              onTap: () {
-              },
+              onTap: () {},
               title:
                   'fafasdafsdasdf\n Additional Data \n Ozone \n Fine Particle Matter',
             ),

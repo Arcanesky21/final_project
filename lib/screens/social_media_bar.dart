@@ -1,5 +1,6 @@
 import 'package:final_project/model/allscreens.dart';
 import 'package:final_project/model/functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SocialMediaSection extends StatefulWidget {
@@ -29,8 +30,9 @@ class _SocialMediaSectionState extends State<SocialMediaSection> {
     const FeedScreen(),
     const SearchScreen(),
     const AddPostsScreen(),
-    const FavouritesScreen(),
-    const Profile(),
+    Profile(
+      uid: FirebaseAuth.instance.currentUser!.uid,
+    ),
   ];
 
   void navigationTapped(int page) {
@@ -79,11 +81,6 @@ class _SocialMediaSectionState extends State<SocialMediaSection> {
               label: 'Add Post',
               icon: Icon(Icons.add_circle,
                   color: _page == 2 ? Colors.white : Colors.grey[700]),
-            ),
-            BottomNavigationBarItem(
-              label: 'Favourites',
-              icon: Icon(Icons.favorite,
-                  color: _page == 3 ? Colors.white : Colors.grey[700]),
             ),
             BottomNavigationBarItem(
               label: 'Profile',

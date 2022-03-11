@@ -1,6 +1,5 @@
 import 'package:final_project/resources/auth_methods.dart';
 import 'package:flutter/material.dart';
-
 import 'package:final_project/model/users.dart';
 
 class UserProvider extends ChangeNotifier {

@@ -1,22 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:final_project/model/users.dart';
+import 'package:final_project/resources/firestore_methods.dart';
+import 'package:final_project/resources/user_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CommentCard extends StatefulWidget {
-  const CommentCard({Key? key}) : super(key: key);
-
+  final Map snap;
+  const CommentCard({Key? key, required this.snap}) : super(key: key);
   @override
   State<CommentCard> createState() => _CommentCardState();
 }
 
 class _CommentCardState extends State<CommentCard> {
+  bool isLikeAnimatingValue = false;
+
   @override
   Widget build(BuildContext context) {
+    final Users user = Provider.of<UserProvider>(context).getUser;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       child: Row(
         children: [
-          const CircleAvatar(
-            backgroundImage: NetworkImage(
-                'https://otakukart.com/wp-content/uploads/2021/11/Itachi-Uchiha-770x433.jpeg'),
+          CircleAvatar(
+            backgroundImage: NetworkImage(widget.snap['profilePic']),
             radius: 18,
           ),
           Expanded(
@@ -27,39 +35,48 @@ class _CommentCardState extends State<CommentCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'username',
-                          style: TextStyle(
+                          text: widget.snap['name'],
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.black),
                         ),
                         TextSpan(
-                          text: '  Some description to insert',
-                          style: TextStyle(color: Colors.black),
+                          text: '  ${widget.snap['text']}',
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
                     child: Text(
-                      '22/22/22',
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                      DateFormat.yMMMd()
+                          .format(widget.snap['datePublished'].toDate()),
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w400),
                     ),
                   )
                 ],
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Icon(
-              Icons.favorite,
-              size: 16,
-            ),
-          )
+          // Column(children: [
+          //   Container(
+          //     padding: const EdgeInsets.all(8),
+          //     child: IconButton(
+          //       onPressed: () async {
+          //         await FirestoreMethods().upDateLikes(
+          //             widget.snap['postId'],
+          //             user.uid,
+          //             widget.snap['likes'],
+          //             widget.snap['postId']['commentId']);
+          //       },
+          //       icon: const Icon(Icons.favorite),
+          //     ),
+          //   ),
+          // ])
         ],
       ),
     );

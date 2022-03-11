@@ -1,6 +1,9 @@
 import 'package:final_project/model/functions.dart';
 import 'package:final_project/model/allscreens.dart';
+import 'package:final_project/model/users.dart';
+import 'package:final_project/resources/user_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NavigationDrawerWidget extends StatefulWidget {
   const NavigationDrawerWidget({Key? key}) : super(key: key);
@@ -19,6 +22,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final Users user = Provider.of<UserProvider>(context).getUser;
     //side window
     return Drawer(
       child: Material(
@@ -26,9 +30,9 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
           decoration: myDecorationColor,
           child: ListView(children: <Widget>[
             buildHeader(
-              urlImage: urlImage,
-              name: 'name',
-              lname: 'lname',
+              urlImage: user.photoUrl,
+              name: user.username,
+              lname: user.name,
               onClicked: () {},
             ),
             Container(

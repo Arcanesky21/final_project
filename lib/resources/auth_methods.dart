@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/resources/storage_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:final_project/model/users.dart' as model;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -83,5 +84,16 @@ class AuthMethods {
       res = err.toString();
     }
     return res;
+  }
+
+  //signout
+  Future<void> signOut() async {
+    try {
+      await _auth.signOut();
+    } catch (err) {
+      Fluttertoast.showToast(
+        msg: err.toString(),
+      );
+    }
   }
 }

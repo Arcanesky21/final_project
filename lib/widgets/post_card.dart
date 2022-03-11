@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/model/allscreens.dart';
 import 'package:final_project/model/users.dart';
 import 'package:final_project/resources/firestore_methods.dart';
 import 'package:final_project/resources/user_providers.dart';
+import 'package:final_project/resources/utils.dart';
 import 'package:final_project/widgets/upvote_downvote.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -18,14 +20,34 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   late int upvoteDownVote;
   bool isButtonActive = true;
+  int commentLen = 0;
 
+  
 
   @override
   void initState() {
     super.initState();
-    
+    getComments();
     upvoteDownVote = widget.snap['likes'].length;
   }
+
+  void getComments() async {
+    try {
+      QuerySnapshot snap = await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(widget.snap['postId'])
+          .collection('comments')
+          .get();
+
+      commentLen = snap.docs.length;
+    } catch (err) {
+      showSnackBar(err.toString(), context);
+    }
+
+    setState(() {});
+  }
+
+  
 
   bool isLikeAnimatingValue = false;
   @override
@@ -72,6 +94,11 @@ class _PostCardState extends State<PostCard> {
                           children: ['Delete']
                               .map(
                                 (e) => InkWell(
+                                  onTap: () async {
+                                    FirestoreMethods()
+                                        .deletePost(widget.snap['postId']);
+                                    Navigator.of(context).pop();
+                                  },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 12, horizontal: 16),
@@ -139,7 +166,9 @@ class _PostCardState extends State<PostCard> {
               IconButton(
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const CommentScreen(),
+                    builder: (context) => CommentScreen(
+                      snap: widget.snap,
+                    ),
                   ),
                 ),
                 icon: const Icon(
@@ -228,10 +257,21 @@ class _PostCardState extends State<PostCard> {
                   onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.only(top: 10),
-                    child: const Text(
-                      'View all comments',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
+                    child: StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection('posts')
+                            .doc(widget.snap['postId'])
+                            .collection('comments')
+                            .snapshots(),
+                        builder: (context,
+                            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                snapshot) {
+                          return Text(
+                            'View all ${snapshot.data?.docs.length} comments',
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.grey),
+                          );
+                        }),
                   ),
                 ),
                 Container(

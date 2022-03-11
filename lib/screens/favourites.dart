@@ -12,7 +12,6 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const NavigationDrawerWidget(),
       appBar: AppBar(),
     );
   }
