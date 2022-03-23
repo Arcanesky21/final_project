@@ -72,6 +72,7 @@ class _ProfileState extends State<Profile> {
             ),
           )
         : Scaffold(
+      
             appBar: AppBar(
               flexibleSpace: Container(decoration: myDecorationColor),
               title: Text(
@@ -215,11 +216,9 @@ class _ProfileState extends State<Profile> {
                               childAspectRatio: 1),
                       itemBuilder: (context, index) {
                         DocumentSnapshot snap = snapshot.data!.docs[index];
-                        return Container(
-                          child: Image(
-                            image: NetworkImage(snap['postUrl']),
-                            fit: BoxFit.cover,
-                          ),
+                        return Image(
+                          image: NetworkImage(snap['postUrl']),
+                          fit: BoxFit.cover,
                         );
                       },
                     );

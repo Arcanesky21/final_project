@@ -2,6 +2,7 @@ import 'package:final_project/model/functions.dart';
 import 'package:final_project/model/allscreens.dart';
 import 'package:final_project/model/users.dart';
 import 'package:final_project/resources/user_providers.dart';
+import 'package:final_project/screens/weather_home.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,7 +50,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                   ),
                   //devices
                   buildMenuItem(
-                      text: 'Devices',
+                      text: 'Weather',
                       icon: Icons.devices_other,
                       onClicked: () => selectedItem(context, 0)),
                   const SizedBox(
@@ -140,7 +141,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     switch (index) {
       case 0:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const MyDevices(),
+          builder: (context) =>  HomePage(),
         ));
         break;
       case 1:

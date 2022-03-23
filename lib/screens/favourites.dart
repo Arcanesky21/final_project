@@ -1,4 +1,3 @@
-import 'package:final_project/widgets/navigation_drawer.dart';
 import 'package:flutter/material.dart';
 
 class FavouritesScreen extends StatefulWidget {

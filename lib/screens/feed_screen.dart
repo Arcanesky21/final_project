@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_project/model/functions.dart';
-import 'package:final_project/widgets/navigation_drawer.dart';
 import 'package:final_project/widgets/post_card.dart';
 import 'package:flutter/material.dart';
 

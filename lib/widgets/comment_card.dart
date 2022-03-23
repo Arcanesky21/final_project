@@ -1,10 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:final_project/model/users.dart';
-import 'package:final_project/resources/firestore_methods.dart';
-import 'package:final_project/resources/user_providers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class CommentCard extends StatefulWidget {
   final Map snap;
@@ -18,7 +14,6 @@ class _CommentCardState extends State<CommentCard> {
 
   @override
   Widget build(BuildContext context) {
-    final Users user = Provider.of<UserProvider>(context).getUser;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       child: Row(

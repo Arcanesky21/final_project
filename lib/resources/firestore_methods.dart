@@ -9,6 +9,7 @@ class FirestoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   //upload
+  
 
   Future<String> uploadPost(String description, Uint8List file, String uid,
       String username, String profImage) async {
