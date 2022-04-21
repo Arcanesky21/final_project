@@ -106,7 +106,7 @@ String findIcon(String name, bool type) {
         return "assets/icons/sunny.png";
       case "Rain":
         return "assets/icons/rainy.png";
-        
+
       case "Drizzle":
         return "assets/icons/rainy.png";
       case "Thunderstorm":
@@ -152,13 +152,13 @@ Future<CityModel?> fetchCity(String cityName) async {
       cityJSON = json.decode(response.body);
     }
   }
-  for (var i = 0; i < cityJSON.length; i++) {
-    if (cityJSON[i]["name"].toString().toLowerCase() ==
+  for (var i = 0; i < cityJSON!.length; i++) {
+    if (cityJSON![i]["name"].toString().toLowerCase() ==
         cityName.toLowerCase()) {
       return CityModel(
-          name: cityJSON[i]["name"].toString(),
-          lat: cityJSON[i]["latitude"].toString(),
-          lon: cityJSON[i]["longitude"].toString());
+          name: cityJSON![i]["name"].toString(),
+          lat: cityJSON![i]["latitude"].toString(),
+          lon: cityJSON![i]["longitude"].toString());
     }
   }
   return null;
