@@ -74,7 +74,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                   ),
                   //contact manufacturer
                   buildMenuItem(
-                      text: 'Contact Manufacturer',
+                      text: 'News',
                       icon: Icons.engineering,
                       onClicked: () => selectedItem(context, 3)),
                   const SizedBox(
@@ -141,7 +141,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     switch (index) {
       case 0:
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) =>  HomePage(),
+          builder: (context) =>  const HomePage(),
         ));
         break;
       case 1:

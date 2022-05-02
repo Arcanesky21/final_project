@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:final_project/model/functions.dart';
+import 'package:final_project/model/notifications_api.dart';
 import 'package:final_project/model/users.dart';
 import 'package:final_project/resources/firestore_methods.dart';
 import 'package:final_project/resources/user_providers.dart';
@@ -19,14 +20,31 @@ class _AddPostsScreenState extends State<AddPostsScreen> {
   Uint8List? _file;
   final TextEditingController _descriptionController = TextEditingController();
   bool _isLoading = false;
+  bool isSwitched = false;
 
-  void postImage(String uid, String username, String profImage) async {
+  void toggleSwitch(bool value) {
+    if (isSwitched == false) {
+      setState(() {
+        isSwitched = true;
+      });
+    } else {
+      setState(() {
+        isSwitched = false;
+      });
+    }
+  }
+
+  void postImage(
+      String uid, String username, String profImage) async {
     setState(() {
       _isLoading = true;
     });
     try {
       String res = await FirestoreMethods().uploadPost(
           _descriptionController.text, _file!, uid, username, profImage);
+
+      
+
       if (res == "Success") {
         setState(() {
           _isLoading = false;
@@ -128,8 +146,8 @@ class _AddPostsScreenState extends State<AddPostsScreen> {
               centerTitle: true,
               actions: [
                 TextButton(
-                  onPressed: () =>
-                      postImage(user.uid, user.username, user.photoUrl),
+                  onPressed: () => postImage(
+                      user.uid, user.username, user.photoUrl),
                   child: Text(
                     'Post',
                     style: TextStyle(
@@ -183,6 +201,7 @@ class _AddPostsScreenState extends State<AddPostsScreen> {
                         ),
                       ),
                     ),
+                    Switch(value: isSwitched, onChanged: toggleSwitch),
                     const Divider(
                       color: Colors.black,
                     )
