@@ -31,6 +31,7 @@ class _ContactManufactState extends State<ContactManufact> {
               if (snapshot.hasData) {
                 //Now let's make a list of articles
                 List<Article> articles = snapshot.data!;
+                
                 return ListView.builder(
                   //Now let's create our custom List tile
                   itemCount: articles.length,

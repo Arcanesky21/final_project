@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 import 'article_model.dart';
 
@@ -22,8 +22,16 @@ class ApiService {
   // but first let's import the http package
 
   Future<List<Article>> getArticle() async {
+        var uri = Uri.https('air-quality.p.rapidapi.com', '/current/airquality',
+        );
+
+    final response = await http.get(uri, headers: {
+      "X-RapidAPI-Host": "climate-change-news12.p.rapidapi.com",
+	"X-RapidAPI-Key": "7bf3231408msh1821937899571edp145138jsn8b453fb089d9",
+	"useQueryString": 'true'
+    });
   
-    Response res = await get(Uri.parse(endPointUrl));
+    final res = await http.get(Uri.parse(endPointUrl));
 
     if (res.statusCode == 200) {
       Map<String, dynamic> json = jsonDecode(res.body);

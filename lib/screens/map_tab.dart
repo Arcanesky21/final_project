@@ -1,9 +1,14 @@
+import 'package:final_project/model/air_quality.api.dart';
 import 'package:final_project/model/directions_repo.dart';
 import 'package:final_project/model/functions.dart';
+import 'package:final_project/model/pollution_model.dart';
+import 'package:final_project/screens/dest_marker.dart';
+import 'package:final_project/screens/marker_detail.dart';
 import 'package:final_project/widgets/navigation_drawer.dart';
+import 'package:final_project/widgets/pollution_info.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:custom_info_window/custom_info_window.dart';
 import '../model/directions_model.dart';
 
 class MapTab extends StatefulWidget {
@@ -20,11 +25,34 @@ class _MapTabState extends State<MapTab> {
   Marker? _origin;
   Marker? _destination;
   Directions? _info;
+  final CustomInfoWindowController _customInfoWindowController =
+      CustomInfoWindowController();
+  late List<PollutionModelCurrent> _pm;
+  late Future singlePollution;
+  double _latitude = 35.779;
+  double _longitude = -78.638;
+
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    singlePollution = getPollutionCurrent();
+    super.initState();
+  }
 
   @override
   void dispose() {
     _googleMapController.dispose();
+    _customInfoWindowController.dispose();
+
     super.dispose();
+  }
+
+  Future<void> getPollutionCurrent() async {
+    _pm = await AirPollutionApi.getPollutionCurrent(_longitude, _latitude);
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -128,11 +156,13 @@ class _MapTabState extends State<MapTab> {
       setState(() {
         _origin = Marker(
             markerId: const MarkerId('origin'),
-            infoWindow: InfoWindow(
-              onTap: () {},
-              title:
-                  'fafasdafsdasdf\n Additional Data \n Ozone \n Fine Particle Matter',
-            ),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const MarkerDetails(),
+                ),
+              );
+            },
             icon: BitmapDescriptor.defaultMarkerWithHue(
                 BitmapDescriptor.hueGreen),
             position: pos);
@@ -143,7 +173,13 @@ class _MapTabState extends State<MapTab> {
       setState(() {
         _destination = Marker(
             markerId: const MarkerId('Destination'),
-            infoWindow: const InfoWindow(title: 'Destination'),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const DestMarkerDetails(),
+                ),
+              );
+            },
             icon:
                 BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
             position: pos);

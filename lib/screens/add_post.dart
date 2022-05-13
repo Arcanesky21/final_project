@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:final_project/model/functions.dart';
-import 'package:final_project/model/notifications_api.dart';
 import 'package:final_project/model/users.dart';
 import 'package:final_project/resources/firestore_methods.dart';
 import 'package:final_project/resources/user_providers.dart';
